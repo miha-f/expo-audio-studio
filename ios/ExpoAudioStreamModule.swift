@@ -75,19 +75,21 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             //     object: nil
             // )
 
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.appDidBecomeActive),
-                name: UIApplication.didBecomeActiveNotification,
-                object: nil
-            )
-            
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.appWillResignActive),
-                name: UIApplication.willResignActiveNotification,
-                object: nil
-            )
+            DispatchQueue.main.async {
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(self.appDidBecomeActive),
+                    name: UIApplication.didBecomeActiveNotification,
+                    object: nil
+                )
+                
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(self.appWillResignActive),
+                    name: UIApplication.willResignActiveNotification,
+                    object: nil
+                )
+            }
         }
         
         OnDestroy {
