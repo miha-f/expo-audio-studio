@@ -26,6 +26,8 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
     private var deviceChangeObserver: Any?
 
     private var isAppInBackground = false
+
+    print("Hello from IOS code!!!")
         
     public func definition() -> ModuleDefinition {
         Name("ExpoAudioStream")
