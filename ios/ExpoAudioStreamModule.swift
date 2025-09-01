@@ -61,19 +61,35 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
                 }
             }
 
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.appDidEnterForeground),
-                name: UIApplication.willEnterForegroundNotification,
-                object: nil
-            )
+            // NotificationCenter.default.addObserver(
+            //     self,
+            //     selector: #selector(self.appDidEnterForeground),
+            //     name: UIApplication.willEnterForegroundNotification,
+            //     object: nil
+            // )
+            //
+            // NotificationCenter.default.addObserver(
+            //     self,
+            //     selector: #selector(self.appDidEnterBackground),
+            //     name: UIApplication.didEnterBackgroundNotification,
+            //     object: nil
+            // )
 
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.appDidEnterBackground),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
+            DispatchQueue.main.async {
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(self.appDidBecomeActive),
+                    name: UIApplication.didBecomeActiveNotification,
+                    object: nil
+                )
+                
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(self.appWillResignActive),
+                    name: UIApplication.willResignActiveNotification,
+                    object: nil
+                )
+            }
         }
         
         OnDestroy {
@@ -85,16 +101,26 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             NotificationCenter.default.removeObserver(self)
         }
 
-        @objc private func appDidEnterForeground() {
+        // @objc private func appDidEnterForeground() {
+        //     Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
+        //     isAppInBackground = false
+        // }
+        //
+        // @objc private func appDidEnterBackground() {
+        //     Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
+        //     isAppInBackground = true
+        // }
+
+        @objc private func appDidBecomeActive() {
             Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
             isAppInBackground = false
         }
 
-        @objc private func appDidEnterBackground() {
+        @objc private func appWillResignActive() {
             Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
             isAppInBackground = true
         }
-        
+
         /// Extracts audio analysis data from an audio file.
         ///
         /// - Parameters:
