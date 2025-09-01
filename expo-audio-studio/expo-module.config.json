@@ -1,0 +1,10 @@
+{
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+        "modules": ["ExpoAudioStreamModule"]
+    },
+    "android": {
+        "modules": ["net.siteed.audiostream.ExpoAudioStreamModule"],
+        "packageImportPath": "net.siteed.audiostream"
+    }
+}
