@@ -24,6 +24,8 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
     private let notificationIdentifier = "audio_recording_notification"
     private var deviceManager = AudioDeviceManager()
     private var deviceChangeObserver: Any?
+
+    private var isAppInBackground = false
         
     public func definition() -> ModuleDefinition {
         Name("ExpoAudioStream")
@@ -58,6 +60,20 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
                     ])
                 }
             }
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.appDidBecomeActive),
+                name: UIApplication.didBecomeActiveNotification,
+                object: nil
+            )
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.appWillResignActive),
+                name: UIApplication.willResignActiveNotification,
+                object: nil
+            )
         }
         
         OnDestroy {
@@ -65,6 +81,18 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             _ = streamManager.stopRecording()
             // Clear device manager delegate
             deviceManager.delegate = nil
+
+            NotificationCenter.default.removeObserver(self)
+        }
+
+        @objc private func appDidBecomeActive() {
+            Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
+            isAppInBackground = false
+        }
+
+        @objc private func appWillResignActive() {
+            Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
+            isAppInBackground = true
         }
         
         /// Extracts audio analysis data from an audio file.
@@ -888,7 +916,11 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             resultDict["compression"] = compressionInfo
         }
         
-        sendEvent(audioDataEvent, resultDict)
+        if !isAppInBackground {
+            sendEvent(audioDataEvent, resultDict)
+        } else {
+            Logger.debug("ExpoAudioStreamModule", "Skipping sending audio_event to device...")
+        }
     }
     
     private func requestNotificationPermissions() async -> Bool {
@@ -908,7 +940,12 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             Logger.debug("ExpoAudioStreamModule", "Delegate: didReceiveProcessingResult: Received nil result.")
         }
         let resultDict = result?.toDictionary() ?? [:] 
-        sendEvent(audioAnalysisEvent, resultDict)
+
+        if !isAppInBackground {
+            sendEvent(audioAnalysisEvent, resultDict)
+        } else {
+            Logger.debug("ExpoAudioStreamModule", "Skipping sending audio_analysis_event to device...")
+        }
     }
     
     /// Checks microphone permission and calls the completion handler with the result.
