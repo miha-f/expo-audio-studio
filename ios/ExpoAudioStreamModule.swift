@@ -27,7 +27,6 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
 
     private var isAppInBackground = false
 
-    print("Hello from IOS code!!!")
         
     public func definition() -> ModuleDefinition {
         Name("ExpoAudioStream")
@@ -78,21 +77,25 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             // )
 
             NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
+                Logger.debug("ExpoAudioStreamModule", "active")
                 print("active")
                 // active
             }
 
             NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
+                Logger.debug("ExpoAudioStreamModule", "inactive")
                 print("inactive")
                 // inactive
             }
 
             NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
+                Logger.debug("ExpoAudioStreamModule", "background")
                 print("background")
                 // Background
             }
 
             NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+                Logger.debug("ExpoAudioStreamModule", "foreground")
                 print("foreground")
                 // Foreground
             }
