@@ -87,16 +87,16 @@ class AudioRecorderManager(
     // Maximum size for analysis buffer to prevent OOM on low-RAM devices with extreme configs
     private val MAX_ANALYSIS_BUFFER_SIZE = 20 * 1024 * 1024 // 20MB
 
-    private var isAppInTheBackground = false
+    private var isAppInBackground = false
     private val lifecycleCallbacks = object : android.app.Application.ActivityLifecycleCallbacks {
         override fun onActivityResumed(activity: android.app.Activity) {
             LogUtils.d(CLASS_NAME, "▶️ Activity resumed: ${activity.localClassName}")
-            isAppInTheBackground = false
+            isAppInBackground = false
         }
 
         override fun onActivityPaused(activity: android.app.Activity) {
             LogUtils.d(CLASS_NAME, "⏸️ Activity paused: ${activity.localClassName}")
-            isAppInTheBackground = true
+            isAppInBackground = true
         }
 
         // Unused, but must be present
@@ -1558,7 +1558,7 @@ class AudioRecorderManager(
                                         
                                         mainHandler.post {
                                             try {
-                                                if(!isAppInTheBackground) {
+                                                if(!isAppInBackground) {
                                                     eventSender.sendExpoEvent(
                                                         Constants.AUDIO_ANALYSIS_EVENT_NAME,
                                                         analysisData.toBundle()
@@ -1666,7 +1666,7 @@ class AudioRecorderManager(
         
         mainHandler.post {
             try {
-                if(!isAppInTheBackground) {
+                if(!isAppInBackground) {
                     eventSender.sendExpoEvent(
                         Constants.AUDIO_EVENT_NAME, bundleOf(
                             "fileUri" to audioFile?.toURI().toString(),
