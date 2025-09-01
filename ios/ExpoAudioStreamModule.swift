@@ -77,6 +77,26 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             //     object: nil
             // )
 
+            NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
+                print("active")
+                // active
+            }
+
+            NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
+                print("inactive")
+                // inactive
+            }
+
+            NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
+                print("background")
+                // Background
+            }
+
+            NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+                print("foreground")
+                // Foreground
+            }
+
             DispatchQueue.main.async {
                 NotificationCenter.default.addObserver(
                     self,
