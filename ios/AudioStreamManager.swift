@@ -50,6 +50,8 @@ class AudioStreamManager: NSObject, AudioDeviceManagerDelegate {
     var isRecording = false
     var isPaused = false
     var isPrepared = false  // Add this new state flag
+
+    static var isAppInBackground = false
     
     // Move static variables to class level
     private var debugBufferCounter = 0
@@ -393,6 +395,8 @@ class AudioStreamManager: NSObject, AudioDeviceManagerDelegate {
         if !isRecording || stopping {
             return
         }
+
+        isAppInBacground = true
         
         // If keepAwake is false, we should track this as a pause and actually pause the engine
         if let settings = recordingSettings, !settings.keepAwake {
@@ -419,6 +423,8 @@ class AudioStreamManager: NSObject, AudioDeviceManagerDelegate {
         if !isRecording || stopping {
             return
         }
+
+        isAppInBacground = false
         
         // If we were paused due to background and keepAwake was false, calculate pause duration
         if let settings = recordingSettings, !settings.keepAwake, let pauseStart = currentPauseStart {

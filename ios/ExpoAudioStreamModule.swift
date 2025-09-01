@@ -76,45 +76,45 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             //     object: nil
             // )
 
-            NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
-                Logger.debug("ExpoAudioStreamModule", "active")
-                print("active")
-                // active
-            }
-
-            NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
-                Logger.debug("ExpoAudioStreamModule", "inactive")
-                print("inactive")
-                // inactive
-            }
-
-            NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
-                Logger.debug("ExpoAudioStreamModule", "background")
-                print("background")
-                // Background
-            }
-
-            NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-                Logger.debug("ExpoAudioStreamModule", "foreground")
-                print("foreground")
-                // Foreground
-            }
-
-            DispatchQueue.main.async {
-                NotificationCenter.default.addObserver(
-                    self,
-                    selector: #selector(self.appDidBecomeActive),
-                    name: UIApplication.didBecomeActiveNotification,
-                    object: nil
-                )
-                
-                NotificationCenter.default.addObserver(
-                    self,
-                    selector: #selector(self.appWillResignActive),
-                    name: UIApplication.willResignActiveNotification,
-                    object: nil
-                )
-            }
+            // NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
+            //     Logger.debug("ExpoAudioStreamModule", "active")
+            //     print("active")
+            //     // active
+            // }
+            //
+            // NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { _ in
+            //     Logger.debug("ExpoAudioStreamModule", "inactive")
+            //     print("inactive")
+            //     // inactive
+            // }
+            //
+            // NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
+            //     Logger.debug("ExpoAudioStreamModule", "background")
+            //     print("background")
+            //     // Background
+            // }
+            //
+            // NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+            //     Logger.debug("ExpoAudioStreamModule", "foreground")
+            //     print("foreground")
+            //     // Foreground
+            // }
+            //
+            // DispatchQueue.main.async {
+            //     NotificationCenter.default.addObserver(
+            //         self,
+            //         selector: #selector(self.appDidBecomeActive),
+            //         name: UIApplication.didBecomeActiveNotification,
+            //         object: nil
+            //     )
+            //
+            //     NotificationCenter.default.addObserver(
+            //         self,
+            //         selector: #selector(self.appWillResignActive),
+            //         name: UIApplication.willResignActiveNotification,
+            //         object: nil
+            //     )
+            // }
         }
         
         OnDestroy {
@@ -862,15 +862,15 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
         }
     }
 
-    @objc private func appDidBecomeActive() {
-        Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
-        isAppInBackground = false
-    }
-
-    @objc private func appWillResignActive() {
-        Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
-        isAppInBackground = true
-    }
+    // @objc private func appDidBecomeActive() {
+    //     Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
+    //     isAppInBackground = false
+    // }
+    //
+    // @objc private func appWillResignActive() {
+    //     Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
+    //     isAppInBackground = true
+    // }
     
     func audioStreamManager(_ manager: AudioStreamManager, didReceiveInterruption info: [String: Any]) {
         Logger.debug("ExpoAudioStreamModule", "Delegate: didReceiveInterruption: \(info)")
@@ -967,7 +967,7 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             resultDict["compression"] = compressionInfo
         }
         
-        if !isAppInBackground {
+        if !AudioStreamManager.isAppInBackground {
             sendEvent(audioDataEvent, resultDict)
         } else {
             Logger.debug("ExpoAudioStreamModule", "Skipping sending audio_event to device...")
@@ -992,7 +992,7 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
         }
         let resultDict = result?.toDictionary() ?? [:] 
 
-        if !isAppInBackground {
+        if !AudioStreamManager.isAppInBackground {
             sendEvent(audioAnalysisEvent, resultDict)
         } else {
             Logger.debug("ExpoAudioStreamModule", "Skipping sending audio_analysis_event to device...")
