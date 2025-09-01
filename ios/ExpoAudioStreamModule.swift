@@ -63,15 +63,15 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
 
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(self.appDidBecomeActive),
-                name: UIApplication.didBecomeActiveNotification,
+                selector: #selector(self.appDidEnterForeground),
+                name: UIApplication.willEnterForegroundNotification,
                 object: nil
             )
 
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(self.appWillResignActive),
-                name: UIApplication.willResignActiveNotification,
+                selector: #selector(self.appDidEnterBackground),
+                name: UIApplication.didEnterBackgroundNotification,
                 object: nil
             )
         }
@@ -85,12 +85,12 @@ public class ExpoAudioStreamModule: Module, AudioStreamManagerDelegate, AudioDev
             NotificationCenter.default.removeObserver(self)
         }
 
-        @objc private func appDidBecomeActive() {
+        @objc private func appDidEnterForeground() {
             Logger.debug("ExpoAudioStreamModule", "▶️ App moved to foreground")
             isAppInBackground = false
         }
 
-        @objc private func appWillResignActive() {
+        @objc private func appDidEnterBackground() {
             Logger.debug("ExpoAudioStreamModule", "⏸️ App moved to background")
             isAppInBackground = true
         }
